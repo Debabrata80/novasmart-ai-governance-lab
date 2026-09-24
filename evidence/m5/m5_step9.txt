@@ -1,0 +1,6 @@
+Mission 5 Step 9 Evidence
+Governance & Ownership Decision on Evaluation Cases:
+1. Evaluation sets are governance benchmarks and measuring instruments.
+2. Only Platform Security & AI Governance (Head of AI Platform & Security) and Pricing Policy Owners are permitted to modify evaluation cases.
+3. Agent developers building agent code must NEVER modify evaluation test cases or references, preventing benchmark drift or self-interested grading.
+4. Changes to evaluation datasets require PR review, version control, and formal policy approval.

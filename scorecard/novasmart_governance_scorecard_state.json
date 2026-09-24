@@ -1,0 +1,135 @@
+{
+  "missions": {
+    "M1": {
+      "status": "FAIL",
+      "timestamp": "2026-09-24 02:00 UTC",
+      "tagline": "\ud83c\udfc6 Achievement Unlocked: Eliminator of Shared Credentials \u2014 You split the shared login, gave each workload its own identity, and cut its access back to what the job needs.",
+      "checks": [
+        {
+          "name": "Shadow Agent Registration",
+          "status": "PASS",
+          "proof": "Registered in Agent Registry with named owner Marketing Ops"
+        },
+        {
+          "name": "Dedicated Service Account",
+          "status": "FAIL",
+          "proof": "promo-agent-shadow still uses shared novasmart-customer-sa credential"
+        },
+        {
+          "name": "Agent Identity Splitting",
+          "status": "FAIL",
+          "proof": "customer-personalization-agent still uses shared novasmart-customer-sa credential"
+        },
+        {
+          "name": "Least-Privilege Dataset Access",
+          "status": "FAIL",
+          "proof": "novasmart-customer-sa retains project-wide roles/bigquery.admin"
+        },
+        {
+          "name": "Audit Log Attribution",
+          "status": "FAIL",
+          "proof": "Data access logs still record shared novasmart-customer-sa for both workloads"
+        },
+        {
+          "name": "Access Enforcement & Denial",
+          "status": "FAIL",
+          "proof": "No access revocation applied; no 403 PERMISSION_DENIED recorded"
+        }
+      ]
+    },
+    "M2": {
+      "status": "PASS",
+      "timestamp": "2026-09-24 02:39 UTC",
+      "tagline": "\ud83c\udfc6 Achievement Unlocked: Architect of Agent Boundaries \u2014 You locked the back-office agent so only the front desk can call it, and watched an unauthorised caller be refused.",
+      "checks": [
+        {
+          "name": "Egress Gateway Attachment",
+          "proof": "novasmart-egress-gateway verified active on Markdown Strategy Agent"
+        },
+        {
+          "name": "A2A Inbound Scoped Policy",
+          "proof": ":getIamPolicy names exclusively PMA principal under roles/aiplatform.user"
+        },
+        {
+          "name": "Rogue Caller Refusal",
+          "proof": "Unauthorized token returns HTTP 403 PERMISSION_DENIED on a2a message:send"
+        },
+        {
+          "name": "Authorized Front-Desk Path",
+          "proof": "Price Match Agent escalation successfully returns margin strategy (APPROVED)"
+        },
+        {
+          "name": "IAP Authz Extension & Policy",
+          "proof": "novasmart-egress-policy targets novasmart-egress-gateway with novasmart-egress-ext"
+        },
+        {
+          "name": "BigQuery MCP CEL Policy",
+          "proof": "CEL condition enforces read-only tools and MCP lifecycle (initialize, tools/list, ping)"
+        },
+        {
+          "name": "Generic Google APIs Access",
+          "proof": "roles/iap.egressor granted on global & regional generic Google APIs endpoints"
+        },
+        {
+          "name": "Policy Scope & Zero Self-Grants",
+          "proof": "Project-level bindings untouched; antigravity-sa roles unchanged"
+        }
+      ]
+    },
+    "M3": {
+      "status": "PASS",
+      "timestamp": "2026-09-24 03:29 UTC",
+      "tagline": "\ud83c\udfc6 Achievement Unlocked: Guardian of the Inference Boundary \u2014 You put content screening in front of the Price Match Agent and watched it refuse a jailbreak that used to get through.",
+      "checks": [
+        {
+          "name": "Model Armor Ingress Gateway Attached",
+          "proof": "spec.deploymentSpec.agentGatewayConfig.clientToAgentConfig.agentGateway set to novasmart-ingress-gateway on ReasoningEngine 192638285477052416"
+        },
+        {
+          "name": "Service Agent Callout IAM Roles Granted",
+          "proof": "roles/modelarmor.calloutUser and roles/modelarmor.user granted to service-444486563225@gcp-sa-dep and service-444486563225@gcp-sa-aiplatform-re"
+        },
+        {
+          "name": "AuthzExtension & AuthzPolicy Active",
+          "proof": "nvst-ma-ext pointing to modelarmor.us-central1.rep.googleapis.com with nvst-jailbreak-template; nvst-ma-policy targeting novasmart-ingress-gateway"
+        },
+        {
+          "name": "Adversarial Prompt Injection Blocked",
+          "proof": "PMA prompt injection blocked with HTTP 403 \u00b7 Model Armor: Prompt violates content security configurations"
+        },
+        {
+          "name": "Legitimate Price Match Traffic Functional",
+          "proof": "Normal 5% price match request approved with HTTP 200"
+        },
+        {
+          "name": "Estate Scope Boundary & Integrity Verified",
+          "proof": "PMA ADK stream covered; CPA/MSA A2A stream documented as out of scope; zero self-grants on antigravity-sa"
+        }
+      ]
+    },
+    "M4": {
+      "status": "PASS",
+      "timestamp": "2026-09-24 03:57 UTC",
+      "tagline": "\ud83c\udfc6 Achievement Unlocked: Master of Agent Observability \u2014 You instrumented distributed OpenTelemetry tracing and full prompt/response logging across multi-agent trajectories.",
+      "checks": [
+        {
+          "name": "Agent Telemetry Audit",
+          "proof": "PMA, CPA, MSA telemetry environment variables verified"
+        },
+        {
+          "name": "Payload Content Capture",
+          "proof": "SPAN_AND_EVENT active in CAPITAL LETTERS across all reasoning engines"
+        },
+        {
+          "name": "Semantic Conventions",
+          "proof": "gen_ai_latest_experimental opt-in active"
+        },
+        {
+          "name": "Multi-Agent Trace & MCP Tool Visibility",
+          "proof": "PMA -> A2A -> MSA -> BigQuery MCP trace hierarchy verified"
+        }
+      ]
+    }
+  },
+  "last_updated": "2026-09-24 03:57 UTC"
+}

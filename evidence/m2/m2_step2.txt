@@ -1,0 +1,31 @@
+=== MODULE 2 STEP 2: IMPACT READOUT & LOCKDOWN EXECUTION ===
+
+1. IMPACT READOUT (BEFORE MUTATION):
+- Rogue Test Login (test-agent-caller): LOSES ACCESS (HTTP 403 Forbidden) because it holds 0 project-level roles.
+- Storefront Infrastructure Account (Compute Default SA): KEEPS WORKING because it holds project-level Owner/Editor permissions.
+- Shared Customer Identity (novasmart-customer-sa): KEEPS WORKING because it holds project-level roles/aiplatform.user.
+- Deployer & Service Accounts: KEEP WORKING because they hold project-level roles/aiplatform.admin / user.
+
+2. GATEWAY CREATION & ATTACHMENT:
+- Agent Gateway: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-egress-gateway (ACTIVE)
+- Attachment PATCH: Submitted LRO 1207866767821504512
+
+3. RESOURCE IAM POLICY REWRITE (:setIamPolicy):
+Target: projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224
+Previous etag: BwZcCqev444=
+New etag: BwZcMUAePMo=
+Allowed Member: principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416
+
+4. LIVE RE-READ VERIFICATION (:getIamPolicy):
+{
+  "version": 1,
+  "etag": "BwZcMUAePMo=",
+  "bindings": [
+    {
+      "role": "roles/aiplatform.user",
+      "members": [
+        "principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416"
+      ]
+    }
+  ]
+}

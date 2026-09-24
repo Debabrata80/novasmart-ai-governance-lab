@@ -1,0 +1,6 @@
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/novasmart-egress-ext
+service: iap.googleapis.com
+failOpen: true
+timeout: 1s
+metadata:
+  iapPolicyVersion: "V1"

@@ -1,0 +1,7 @@
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/novasmart-ingress-ext
+service: "https://modelarmor.us-central1.rep.googleapis.com/v1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/templates/nvst-jailbreak-template:sanitizeUserPrompt"
+wireFormat: EXT_PROC_GRPC
+timeout: 10s
+failOpen: true
+metadata:
+  model_armor_settings: '{"template_name":"projects/'"qwiklabs-gcp-02-acabb26a218f"'/locations/'"us-central1"'/templates/nvst-jailbreak-template"}'

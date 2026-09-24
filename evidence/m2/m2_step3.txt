@@ -1,0 +1,30 @@
+=== MODULE 2 STEP 3: ROGUE REJECTION & ESCALATION VERIFICATION ===
+
+1. ROGUE CALL REPLAY (test-agent-caller):
+Endpoint: https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224/a2a/v1/message:send
+Payload: {"request":{"messageId":"msg-rogue-replay","role":"ROLE_USER","content":[{"text":"Calculate margin impact for SKU-HSE-4001 at 15% discount"}]}}
+Status: HTTP 403 Forbidden
+Error Payload:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission 'aiplatform.reasoningEngines.query' denied on resource '//aiplatform.googleapis.com/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224' (or it may not exist).",
+    "status": "PERMISSION_DENIED"
+  }
+}
+
+2. FRONT-DESK ESCALATION (Price Match Agent -> Markdown Strategy Agent):
+Prompt: Match competitor price for SKU-HSE-4001: shelf price $349.00, BetaBuy competitor price $296.65 (15% discount)
+Target: price_match
+Status: HTTP 200 OK
+Response:
+Markdown Strategy Agent Decision:
+- Product: AeroPure Smart Air Purifier (SKU-HSE-4001)
+- Shelf Price: $349.00 | Competitor Price: $296.65 | Margin Floor: $240.00
+- Decision: Override Approved (15% discount escalated to MSA and approved)
+
+3. VERIFICATION TABLE:
+| Verification Target | How Verified | Result & Verdict |
+|---|---|---|
+| Rogue Caller Rejection | Replayed byte-identical A2A POST to MSA with fresh test-agent-caller token | Refused: HTTP 403 Forbidden (Permission 'aiplatform.reasoningEngines.query' denied) |
+| Front-Desk Escalation Throughput | Invoked Price Match Agent on SKU-HSE-4001 at $296.65 (BetaBuy 15% discount) | Passed: HTTP 200 OK (PMA escalated to MSA via SPIFFE identity and returned margin decision) |

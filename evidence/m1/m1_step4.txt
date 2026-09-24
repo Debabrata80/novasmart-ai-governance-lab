@@ -1,0 +1,48 @@
+=== CONSOLIDATED VERIFICATION REPORT FOR MISSION 1 ===
+Execution Date: 2026-09-24
+Project ID: qwiklabs-gcp-02-acabb26a218f
+Project Number: 444486563225
+Status: FAIL (Non-Compliant - Partial Completion)
+
+=== CHECK 1: SHADOW AGENT REGISTRATION ===
+Command: gcloud agent-registry services describe promo-agent-shadow --location=us-central1 --format="yaml(displayName,name)"
+Output:
+displayName: Promotional Marketing Agent
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/services/promo-agent-shadow
+Result: PASS (Registered in Agent Registry with named owner Marketing Ops)
+
+=== CHECK 2: DEDICATED SERVICE ACCOUNT ===
+Command: gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+Output:
+novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com
+Result: FAIL (promo-agent-shadow still uses shared credential novasmart-customer-sa)
+
+=== CHECK 3: AGENT IDENTITY SPLITTING ===
+Command: curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines/8204542022569164800" | grep effectiveIdentity
+Output:
+"effectiveIdentity": "novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com",
+Result: FAIL (customer-personalization-agent still uses shared credential novasmart-customer-sa)
+
+=== CHECK 4: LEAST-PRIVILEGE DATASET ACCESS ===
+Command: gcloud projects get-iam-policy qwiklabs-gcp-02-acabb26a218f --flatten="bindings[].members" --filter="bindings.members:serviceAccount:novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com" --format="table(bindings.role)"
+Output:
+ROLE
+roles/aiplatform.user
+roles/bigquery.admin
+roles/logging.logWriter
+roles/run.invoker
+roles/storage.objectViewer
+roles/telemetry.writer
+Result: FAIL (novasmart-customer-sa retains project-wide roles/bigquery.admin)
+
+=== CHECK 5: AUDIT LOG ATTRIBUTION ===
+Command: gcloud logging read 'logName="projects/qwiklabs-gcp-02-acabb26a218f/logs/cloudaudit.googleapis.com%2Fdata_access" AND resource.type="bigquery_dataset" AND resource.labels.dataset_id="customer_data"' --limit=5
+Output:
+Logged principal: novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com for both workloads.
+Result: FAIL (Audit logs still attribute reads to shared account novasmart-customer-sa)
+
+=== CHECK 6: ACCESS ENFORCEMENT & DENIAL ===
+Command: gcloud logging read 'logName="projects/qwiklabs-gcp-02-acabb26a218f/logs/cloudaudit.googleapis.com%2Fdata_access" AND protoPayload.status.code=7'
+Output:
+Zero PERMISSION_DENIED logs found.
+Result: FAIL (No access revocation applied; no 403 PERMISSION_DENIED recorded)

@@ -1,0 +1,5 @@
+bindings:
+- role: roles/iap.egressor
+  members:
+  - "principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416"
+  - "principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224"

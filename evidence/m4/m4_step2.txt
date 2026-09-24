@@ -1,0 +1,50 @@
+=== Mission 4 Step 2 Evidence: Enable auto-instrumentation and payload capture ===
+Timestamp: 2026-09-24T03:38:44Z
+Project ID: qwiklabs-gcp-02-acabb26a218f
+Project Number: 444486563225
+Region: us-central1
+Target Agent: Markdown Strategy Agent (ReasoningEngine ID: 6319785578514612224)
+
+--- Command Executed ---
+PATCH Payload:
+  {
+    "spec": {
+      "deploymentSpec": {
+        "env": [
+          {"name": "GCP_PROJECT_ID", "value": "qwiklabs-gcp-02-acabb26a218f"},
+          {"name": "GOOGLE_CLOUD_REGION", "value": "global"},
+          {"name": "GOOGLE_CLOUD_LOCATION", "value": "global"},
+          {"name": "VERTEXAI_LOCATION", "value": "global"},
+          {"name": "GEMINI_LOCATION", "value": "global"},
+          {"name": "REGIONAL_REGISTRY_LOCATION", "value": "us-central1"},
+          {"name": "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY", "value": "true"},
+          {"name": "OTEL_SEMCONV_STABILITY_OPT_IN", "value": "gen_ai_latest_experimental"},
+          {"name": "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT", "value": "SPAN_AND_EVENT"},
+          {"name": "GOOGLE_API_PREVENT_AGENT_TOKEN_SHARING_FOR_GCP_SERVICES", "value": "false"},
+          {"name": "OTEL_TRACES_SAMPLER", "value": "always_on"},
+          {"name": "OTEL_INSTRUMENTATION_A2A_SDK_ENABLED", "value": "false"},
+          {"name": "GEMINI_MODEL", "value": "gemini-3.6-flash"}
+        ]
+      }
+    }
+  }
+
+Request:
+  curl -s -X PATCH -H "Authorization: Bearer <TOKEN>" -H "Content-Type: application/json" \
+    -d "$PATCH_PAYLOAD" \
+    "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224?updateMask=spec.deploymentSpec.env"
+
+--- Live Verification Output ---
+Re-read deploymentSpec.env:
+  {
+    "name": "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT",
+    "value": "SPAN_AND_EVENT"
+  }
+Status: ENABLED (Capitalized SPAN_AND_EVENT active on MSA)
+
+--- Change Record ---
+Change: Updated OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT from lowercase "span_and_event" to uppercase "SPAN_AND_EVENT" to enable payload content logging in OpenTelemetry SDK.
+Resource: ReasoningEngine 6319785578514612224 (Markdown Strategy Agent)
+When: 2026-09-24T03:38:44Z
+Undo:
+curl -s -X PATCH -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" -d '{"spec":{"deploymentSpec":{"env":[{"name":"OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT","value":"span_and_event"}]}}}' "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224?updateMask=spec.deploymentSpec.env"

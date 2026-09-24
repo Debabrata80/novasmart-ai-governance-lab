@@ -1,0 +1,79 @@
+=== Mission 3 Step 3 Evidence: Turn the screening on ===
+Timestamp: 2026-09-24T03:17:41Z
+Project: qwiklabs-gcp-02-acabb26a218f
+Project Number: 444486563225
+Region: us-central1
+
+--- Operation 0: Prerequisite IAM Grants ---
+Service Accounts Granted Callout Roles:
+- service-444486563225@gcp-sa-dep.iam.gserviceaccount.com
+- service-444486563225@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+Roles:
+- roles/modelarmor.calloutUser
+- roles/modelarmor.user
+- roles/serviceusage.serviceUsageConsumer
+
+--- Operation 1: Ingress Agent Gateway ---
+Resource: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-ingress-gateway
+Command: gcloud beta network-services agent-gateways import novasmart-ingress-gateway --source=/tmp/ingress-gw.yaml --location=us-central1
+Configuration:
+  protocols: [MCP]
+  googleManaged:
+    governedAccessPath: CLIENT_TO_AGENT
+
+--- Operation 2: Model Armor AuthzExtension ---
+Resource: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/nvst-ma-ext
+Command: gcloud beta service-extensions authz-extensions import nvst-ma-ext --source=/tmp/ma-ext.yaml --location=us-central1
+Configuration:
+  service: modelarmor.us-central1.rep.googleapis.com
+  metadata:
+    model_armor_settings: '[{"request_template_id":"projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/templates/nvst-jailbreak-template","response_template_id":"projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/templates/nvst-jailbreak-template"}]'
+  failOpen: true
+  timeout: 1s
+
+--- Operation 3: Authorization Policy ---
+Resource: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzPolicies/nvst-ma-policy
+Command: gcloud beta network-security authz-policies import nvst-ma-policy --source=/tmp/ma-pol.yaml --location=us-central1
+Configuration:
+  target:
+    resources:
+    - projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-ingress-gateway
+  policyProfile: CONTENT_AUTHZ
+  action: CUSTOM
+  customProvider:
+    authzExtension:
+      resources:
+      - projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/nvst-ma-ext
+
+--- Operation 4: Route Price Match Agent (PMA) ---
+Target Engine: Price Match Agent (ReasoningEngine ID: 192638285477052416)
+Command:
+  curl -s -X PATCH -H "Authorization: Bearer <TOKEN>" -H "Content-Type: application/json" \
+    -d '{"spec":{"deploymentSpec":{"agentGatewayConfig":{"clientToAgentConfig":{"agentGateway":"projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-ingress-gateway"}}}}}' \
+    "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416?updateMask=spec.deploymentSpec.agentGatewayConfig"
+
+--- Live Attachment Re-Read Verification ---
+Command:
+  curl -s -H "Authorization: Bearer <TOKEN>" \
+    "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416"
+Live Output Quoted:
+  spec.deploymentSpec.agentGatewayConfig: {
+    "clientToAgentConfig": {
+      "agentGateway": "projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-ingress-gateway"
+    }
+  }
+
+--- Change Record ---
+Change: Provisioned ingress Model Armor gateway, extension, authz policy, and attached PMA
+Resource: ReasoningEngine 192638285477052416, AgentGateway novasmart-ingress-gateway, AuthzExtension nvst-ma-ext, AuthzPolicy nvst-ma-policy
+When: 2026-09-24T03:17:41Z
+Undo:
+curl -X PATCH -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416?updateMask=spec.deploymentSpec.agentGatewayConfig" -d '{"spec":{"deploymentSpec":{}}}'
+gcloud beta network-security authz-policies delete nvst-ma-policy --location=us-central1 --quiet
+gcloud beta service-extensions authz-extensions delete nvst-ma-ext --location=us-central1 --quiet
+gcloud beta network-services agent-gateways delete novasmart-ingress-gateway --location=us-central1 --quiet
+
+--- Coverage Boundary & Notes ---
+1. Protection Scope: Messages arriving for the Price Match Agent (PMA) now pass through a content screen before the agent sees them.
+2. Uncovered Agents: Customer Personalization Agent (CPA) and Merchant Sourcing Agent (MSA) use A2A streaming (`message:stream`) which is out of scope for ADK client-to-agent ingress gateway screening.
+3. Propagation Window: The gateway attach takes up to 5 minutes (~300 seconds) to propagate fully across Vertex AI runtime instances.

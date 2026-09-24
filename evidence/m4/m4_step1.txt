@@ -1,0 +1,40 @@
+=== Mission 4 Step 1 Evidence: Check observability status across all agents ===
+Timestamp: 2026-09-24T03:33:59Z
+Project ID: qwiklabs-gcp-02-acabb26a218f
+Project Number: 444486563225
+Region: us-central1
+
+--- Audit Command ---
+curl -s -H "Authorization: Bearer <TOKEN>" \
+  "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines"
+
+--- Deployed Reasoning Engines Telemetry Audit ---
+
+1. Price Match Agent (PMA)
+   ReasoningEngine ID: 192638285477052416
+   GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY: "true"
+   OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT: "SPAN_AND_EVENT"
+   Observability Status: ENABLED (Payload content capture active in CAPITAL LETTERS)
+
+2. Customer Personalization Agent (CPA)
+   ReasoningEngine ID: 8204542022569164800
+   GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY: "true"
+   OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT: "SPAN_AND_EVENT"
+   Observability Status: ENABLED (Payload content capture active in CAPITAL LETTERS)
+
+3. Markdown Strategy Agent (MSA)
+   ReasoningEngine ID: 6319785578514612224
+   GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY: "true"
+   OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT: "span_and_event"
+   Observability Status: NOT ENABLED (Case defect: "span_and_event" is set in lowercase; OpenTelemetry SDK requires strict CAPITAL LETTERS for payload capture modes)
+
+--- Observability Status Summary Table ---
+| Agent Name | Resource ID | Telemetry Active | Payload Capture Mode | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Price Match Agent** | `192638285477052416` | `true` | `SPAN_AND_EVENT` | **ENABLED** |
+| **Customer Personalization Agent** | `8204542022569164800` | `true` | `SPAN_AND_EVENT` | **ENABLED** |
+| **Markdown Strategy Agent** | `6319785578514612224` | `true` | `span_and_event` | **NOT ENABLED** (Lowercase defect) |
+
+--- Findings & Next Step ---
+The Markdown Strategy Agent (MSA) is currently operating silently without payload content capture due to a case-sensitivity bug (`span_and_event` in lowercase). The OpenTelemetry GenAI SDK requires strict uppercase values (`SPAN_AND_EVENT`) to enable prompt/response event recording.
+EOF

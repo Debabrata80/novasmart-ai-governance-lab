@@ -1,0 +1,28 @@
+=== COMMANDS ===
+gcloud agent-registry services create promo-agent-shadow \
+  --location=us-central1 \
+  --display-name="Promotional Marketing Agent" \
+  --description="Promotional flash-sale marketing agent managed by Marketing Ops." \
+  --agent-spec-type=no-spec \
+  --interfaces="url=https://promo-agent-shadow-aljl2x27ta-uc.a.run.app,protocolBinding=http-json"
+
+gcloud agent-registry services describe promo-agent-shadow --location=us-central1 --format="yaml"
+
+gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+
+=== OUTPUTS ===
+$ gcloud agent-registry services describe promo-agent-shadow --location=us-central1 --format="yaml"
+agentSpec:
+  type: NO_SPEC
+createTime: '2026-09-24T01:45:29.697786723Z'
+description: Promotional flash-sale marketing agent managed by Marketing Ops.
+displayName: Promotional Marketing Agent
+interfaces:
+- protocolBinding: HTTP_JSON
+  url: https://promo-agent-shadow-aljl2x27ta-uc.a.run.app
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/services/promo-agent-shadow
+registryResource: projects/444486563225/locations/us-central1/agents/agentregistry-00000000-0000-0000-16e4-bb56ff319e65
+updateTime: '2026-09-24T01:45:29.899291727Z'
+
+$ gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com

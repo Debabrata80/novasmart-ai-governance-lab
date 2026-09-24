@@ -1,0 +1,118 @@
+=== PROVENANCE & TRIGGERS ===
+MARK=2026-09-24T01:38:01Z
+
+Trigger 1: promo target
+POST https://novasmart-store-portal-aljl2x27ta-uc.a.run.app/api/chat
+Body: {"prompt": "Show me promotional discounts for our best customers", "target": "promo"}
+HTTP Status: 200
+
+Trigger 2: customer target
+POST https://novasmart-store-portal-aljl2x27ta-uc.a.run.app/api/chat
+Body: {"prompt": "Show me customer details", "target": "customer"}
+HTTP Status: 200
+
+=== COMMANDS ===
+gcloud logging read 'logName="projects/qwiklabs-gcp-02-acabb26a218f/logs/cloudaudit.googleapis.com%2Fdata_access" AND resource.type="bigquery_dataset" AND resource.labels.dataset_id="customer_data" AND protoPayload.metadata.tableDataRead:*' --limit=20 --freshness=1d --format=json
+
+bq show --format=prettyjson qwiklabs-gcp-02-acabb26a218f:customer_data
+
+gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+
+curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines/8204542022569164800"
+
+=== OUTPUTS ===
+$ gcloud logging read 'logName="projects/qwiklabs-gcp-02-acabb26a218f/logs/cloudaudit.googleapis.com%2Fdata_access" AND resource.type="bigquery_dataset" AND resource.labels.dataset_id="customer_data" AND protoPayload.metadata.tableDataRead:*' --limit=20 --freshness=1d --format=json
+[
+  {
+    "insertId": "c8n9che2ajn8",
+    "logName": "projects/qwiklabs-gcp-02-acabb26a218f/logs/cloudaudit.googleapis.com%2Fdata_access",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "oauthInfo": {
+          "oauthClientId": "103726814800925635738"
+        },
+        "principalEmail": "novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com",
+        "serviceAccountDelegationInfo": [
+          {
+            "firstPartyPrincipal": {
+              "principalEmail": "service-444486563225@serverless-robot-prod.iam.gserviceaccount.com"
+            }
+          }
+        ]
+      },
+      "authorizationInfo": [
+        {
+          "granted": true,
+          "permission": "bigquery.tables.getData",
+          "permissionType": "DATA_READ",
+          "resource": "projects/qwiklabs-gcp-02-acabb26a218f/datasets/customer_data/tables/customers",
+          "resourceAttributes": {}
+        }
+      ],
+      "metadata": {
+        "@type": "type.googleapis.com/google.cloud.audit.BigQueryAuditMetadata",
+        "tableDataRead": {
+          "fields": [
+            "customer_id",
+            "email",
+            "lifetime_value",
+            "loyalty_tier",
+            "name"
+          ],
+          "jobName": "projects/qwiklabs-gcp-02-acabb26a218f/jobs/72318e14-86ef-4273-81a3-6bed7d039c7e",
+          "reason": "JOB"
+        }
+      },
+      "methodName": "google.cloud.bigquery.v2.JobService.InsertJob",
+      "resourceName": "projects/qwiklabs-gcp-02-acabb26a218f/datasets/customer_data/tables/customers",
+      "serviceName": "bigquery.googleapis.com"
+    },
+    "receiveTimestamp": "2026-09-24T01:38:48.877075315Z",
+    "resource": {
+      "labels": {
+        "dataset_id": "customer_data",
+        "project_id": "qwiklabs-gcp-02-acabb26a218f"
+      },
+      "type": "bigquery_dataset"
+    },
+    "severity": "INFO",
+    "timestamp": "2026-09-24T01:38:47.863726Z"
+  }
+]
+
+$ bq show --format=prettyjson qwiklabs-gcp-02-acabb26a218f:customer_data
+{
+  "access": [
+    {
+      "role": "WRITER",
+      "specialGroup": "projectWriters"
+    },
+    {
+      "role": "OWNER",
+      "specialGroup": "projectOwners"
+    },
+    {
+      "role": "OWNER",
+      "userByEmail": "qwiklabs-gcp-02-acabb26a218f@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com"
+    },
+    {
+      "role": "READER",
+      "specialGroup": "projectReaders"
+    },
+    {
+      "role": "roles/bigquery.securityAdmin",
+      "userByEmail": "antigravity-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com"
+    }
+  ],
+  "datasetReference": {
+    "datasetId": "customer_data",
+    "projectId": "qwiklabs-gcp-02-acabb26a218f"
+  }
+}
+
+$ gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com
+
+$ curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines/8204542022569164800" | grep effectiveIdentity
+"effectiveIdentity": "novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com"

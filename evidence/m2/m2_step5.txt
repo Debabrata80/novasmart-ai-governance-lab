@@ -1,0 +1,63 @@
+=== Mission 2 (Module 2 Step 5) Verification Evidence ===
+Timestamp (UTC): 2026-09-24 02:35:12
+
+1. Egress Gateway Attachment Check:
+   - Target Agent: Markdown Strategy Agent (6319785578514612224)
+   - Egress Gateway: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-egress-gateway
+   - Status: PASS (Attached to deploymentSpec.agentGatewayConfig.agentToAnywhereConfig)
+
+2. A2A Inbound Policy Check:
+   - Resource: reasoningEngines/6319785578514612224
+   - IAM Policy (:getIamPolicy):
+     {
+       "version": 1,
+       "etag": "BwZcMUAePMo=",
+       "bindings": [
+         {
+           "role": "roles/aiplatform.user",
+           "members": [
+             "principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416"
+           ]
+         }
+       ]
+     }
+   - Status: PASS (Exclusively names PMA principal)
+
+3. Rogue Caller Refusal Check:
+   - Caller: test-agent-caller (Rogue Token)
+   - Method: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines/6319785578514612224/a2a/v1/message:send
+   - Response:
+     HTTP 403 PERMISSION_DENIED
+     Permission 'aiplatform.reasoningEngines.query' denied on resource
+   - Status: PASS (Rogue caller blocked)
+
+4. Authorized Front-Desk Escalation Check:
+   - Request: Match competitor price for SKU-HSE-4001: shelf price $349.00, BetaBuy competitor price $296.65 (15% discount)
+   - Route: Storefront -> Price Match Agent -> Markdown Strategy Agent
+   - Response: Override Approved (Calculated 15% discount > 10% threshold, verified above margin floor $240.00)
+   - Status: PASS (Authorized inter-agent communication working)
+
+5. IAP Authz Extension & Policy Check:
+   - Policy Name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzPolicies/novasmart-egress-policy
+   - Target: agentGateways/novasmart-egress-gateway
+   - Extension: authzExtensions/novasmart-egress-ext
+   - Profile: REQUEST_AUTHZ
+   - Status: PASS
+
+6. BigQuery MCP Server CEL Policy Check:
+   - MCP Server: agentregistry-00000000-0000-0000-8d39-77efcab468fb
+   - Title: Enforce_BigQuery_ReadOnly_Tools
+   - Expression: api.getAttribute('request.method', '') in ['initialize', 'tools/list', 'tools/call', 'notifications/initialized', 'ping', 'execute_sql_readonly', 'list_tables', 'get_table_schema', 'list_datasets']
+   - Members: PMA & MSA SPIFFE principals
+   - Status: PASS
+
+7. Generic Google APIs Access Check:
+   - Global Endpoint: agentregistry-00000000-0000-0000-46bd-eed8a4bc7a48
+   - Regional Endpoint: agentregistry-00000000-0000-0000-4cb8-18a2e7aecdf6
+   - Members: PMA & MSA SPIFFE principals
+   - Role: roles/iap.egressor
+   - Status: PASS
+
+8. Policy Scope & Zero Self-Grants Check:
+   - antigravity-sa project-level bindings: Unchanged / zero escalation
+   - Status: PASS

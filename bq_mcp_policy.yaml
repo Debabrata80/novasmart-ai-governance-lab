@@ -1,0 +1,9 @@
+bindings:
+- role: roles/iap.egressor
+  members:
+  - "principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416"
+  - "principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224"
+  condition:
+    title: "Enforce_BigQuery_ReadOnly_Tools"
+    description: "Allow only read-only BigQuery tool methods and MCP lifecycle"
+    expression: "api.getAttribute('request.method', '') in ['initialize', 'tools/list', 'tools/call', 'notifications/initialized', 'ping', 'execute_sql_readonly', 'list_tables', 'get_table_schema', 'list_datasets']"

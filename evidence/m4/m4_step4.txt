@@ -1,0 +1,36 @@
+=== Mission 4 Step 4 Evidence: Verify M4 Observability Controls & Generate Scorecard ===
+Timestamp: 2026-09-24T03:57:52Z
+Project ID: qwiklabs-gcp-02-acabb26a218f
+Project Number: 444486563225
+Region: us-central1
+
+--- Audit Verification Checks ---
+
+Check 1: Agent Telemetry Audit
+  Target: Price Match Agent (192638285477052416), Customer Personalization Agent (8204542022569164800), Markdown Strategy Agent (6319785578514612224)
+  Verification: GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY="true" verified on all 3 reasoning engines.
+  Result: PASS
+
+Check 2: Payload Content Capture
+  Target: OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT
+  Verification:
+    - PMA: "SPAN_AND_EVENT" (Active, CAPITAL LETTERS)
+    - CPA: "SPAN_AND_EVENT" (Active, CAPITAL LETTERS)
+    - MSA: "SPAN_AND_EVENT" (Updated from lowercase defect to CAPITAL LETTERS)
+  Result: PASS
+
+Check 3: Semantic Conventions
+  Target: OTEL_SEMCONV_STABILITY_OPT_IN
+  Verification: "gen_ai_latest_experimental" configured on reasoning engines.
+  Result: PASS
+
+Check 4: Multi-Agent Trace & MCP Tool Visibility
+  Target: Live A2A invocation (Invocation ID: e-36eb50aa-0ffc-4c2d-8a39-d567f73f03a0)
+  Verification: Distributed trace tree correlated PMA -> A2A -> MSA -> BigQuery MCP execute_sql_readonly tool execution. Input/output event payloads captured.
+  Result: PASS
+
+--- Governance Scorecard Update ---
+Executed: python3 /config/Desktop/Session1/.agents/skills/novasmart-governance-lab/scripts/update_scorecard.py --mission M4 --status PASS
+Scorecard Location: /config/Desktop/novasmart-scorecard/governance_scorecard.html
+Result: PASS
+EOF

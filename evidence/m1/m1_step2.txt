@@ -1,0 +1,53 @@
+=== COMMANDS ===
+gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+
+curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines/8204542022569164800" | grep effectiveIdentity
+
+gcloud projects get-iam-policy qwiklabs-gcp-02-acabb26a218f \
+  --flatten="bindings[].members" \
+  --filter="bindings.members:serviceAccount:novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com" \
+  --format="table(bindings.role)"
+
+bq show --format=prettyjson qwiklabs-gcp-02-acabb26a218f:customer_data
+
+=== OUTPUTS ===
+$ gcloud run services describe promo-agent-shadow --region=us-central1 --format="value(spec.template.spec.serviceAccountName)"
+novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com
+
+$ curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines/8204542022569164800" | grep effectiveIdentity
+"effectiveIdentity": "novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com",
+
+$ gcloud projects get-iam-policy qwiklabs-gcp-02-acabb26a218f --flatten="bindings[].members" --filter="bindings.members:serviceAccount:novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com" --format="table(bindings.role)"
+ROLE
+roles/aiplatform.user
+roles/bigquery.admin
+roles/logging.logWriter
+roles/run.invoker
+roles/storage.objectViewer
+roles/telemetry.writer
+
+$ bq show --format=prettyjson qwiklabs-gcp-02-acabb26a218f:customer_data
+{
+  "access": [
+    {
+      "role": "WRITER",
+      "specialGroup": "projectWriters"
+    },
+    {
+      "role": "OWNER",
+      "specialGroup": "projectOwners"
+    },
+    {
+      "role": "OWNER",
+      "userByEmail": "qwiklabs-gcp-02-acabb26a218f@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com"
+    },
+    {
+      "role": "READER",
+      "specialGroup": "projectReaders"
+    },
+    {
+      "role": "roles/bigquery.securityAdmin",
+      "userByEmail": "antigravity-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com"
+    }
+  ]
+}

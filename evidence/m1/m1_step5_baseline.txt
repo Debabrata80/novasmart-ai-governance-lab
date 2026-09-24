@@ -1,0 +1,20 @@
+=== COMMAND ===
+gcloud logging read 'logName="projects/qwiklabs-gcp-02-acabb26a218f/logs/cloudaudit.googleapis.com%2Fdata_access" AND resource.type="bigquery_dataset" AND resource.labels.dataset_id="customer_data"' --limit=10 --freshness=1d --format=json
+
+=== OUTPUT (LIVE RE-READ) ===
+[
+  {
+    "timestamp": "2026-09-24T01:39:06.723404Z",
+    "insertId": "tpt0dqe35bzv",
+    "principalEmail": "novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com",
+    "delegation": "service-444486563225@gcp-sa-aiplatform.iam.gserviceaccount.com",
+    "resource": "projects/qwiklabs-gcp-02-acabb26a218f/datasets/customer_data/tables/customers"
+  },
+  {
+    "timestamp": "2026-09-24T01:38:47.863726Z",
+    "insertId": "c8n9che2ajn8",
+    "principalEmail": "novasmart-customer-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com",
+    "delegation": "service-444486563225@serverless-robot-prod.iam.gserviceaccount.com",
+    "resource": "projects/qwiklabs-gcp-02-acabb26a218f/datasets/customer_data/tables/customers"
+  }
+]

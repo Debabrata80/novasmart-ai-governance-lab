@@ -1,0 +1,10 @@
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzPolicies/novasmart-ingress-policy
+target:
+  resources:
+  - "projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-ingress-gateway"
+policyProfile: CONTENT_AUTHZ
+action: CUSTOM
+customProvider:
+  authzExtension:
+    resources:
+    - "projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/novasmart-ingress-ext"

@@ -1,0 +1,2 @@
+Mission 5 Step 5 Evidence
+Authored unified diff for prompt security hardening (defense against prompt injection and secret key NVST-PRICING-7741 leaks).

@@ -1,0 +1,56 @@
+=== COMMANDS ===
+curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines"
+gcloud run services list --format="yaml(metadata.name,metadata.namespace,status.address.url)"
+
+=== OUTPUTS ===
+$ curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/reasoningEngines"
+{
+  "reasoningEngines": [
+    {
+      "name": "projects/444486563225/locations/us-central1/reasoningEngines/5883015481744424960",
+      "displayName": "Price Match Agent",
+      "description": "Front-line Price Match Verification Agent. Calculates discounts and approves <= 10% directly."
+    },
+    {
+      "name": "projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224",
+      "displayName": "markdown-strategy-agent",
+      "description": "Corporate Markdown Strategy Agent. Analyzes inventory, cost, and margin data in BigQuery."
+    },
+    {
+      "name": "projects/444486563225/locations/us-central1/reasoningEngines/8204542022569164800",
+      "displayName": "customer-personalization-agent",
+      "description": "Official managed agent querying customer loyalty tiers and PII via novasmart-mcp."
+    }
+  ]
+}
+
+$ gcloud run services list --format="yaml(metadata.name,metadata.namespace,status.address.url)"
+---
+metadata:
+  name: novasmart-mcp
+  namespace: '444486563225'
+status:
+  address:
+    url: https://novasmart-mcp-aljl2x27ta-uc.a.run.app
+---
+metadata:
+  name: novasmart-store-portal
+  namespace: '444486563225'
+status:
+  address:
+    url: https://novasmart-store-portal-aljl2x27ta-uc.a.run.app
+---
+metadata:
+  name: promo-agent-shadow
+  namespace: '444486563225'
+status:
+  address:
+    url: https://promo-agent-shadow-aljl2x27ta-uc.a.run.app
+---
+metadata:
+  name: remote-browser-vm1
+  namespace: '444486563225'
+status:
+  address:
+    url: https://remote-browser-vm1-aljl2x27ta-df.a.run.app

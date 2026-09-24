@@ -1,0 +1,28 @@
+=== MODULE 2 STEP 4: IAP AUTHZ EXTENSION, FINE-GRAINED CEL POLICY & DATABASE LEAST PRIVILEGE ===
+
+1. IAP AUTHZ EXTENSION & AUTHZ POLICY:
+- AuthzExtension Resource: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/novasmart-egress-ext
+  Service: iap.googleapis.com | failOpen: true | timeout: 1s | iapPolicyVersion: V1
+- AuthzPolicy Resource: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzPolicies/novasmart-egress-policy
+  Target: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-egress-gateway
+  Profile: REQUEST_AUTHZ | Action: CUSTOM | Provider: novasmart-egress-ext
+
+2. FINE-GRAINED IAP CEL POLICY ON BIGQUERY MCP SERVER:
+- MCP Server Resource: projects/qwiklabs-gcp-02-acabb26a218f/locations/global/mcpServers/agentregistry-00000000-0000-0000-8d39-77efcab468fb
+- Granted Principals:
+  - principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416 (PMA)
+  - principal://agents.global.org-616463121992.system.id.goog/resources/aiplatform/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224 (MSA)
+- CEL Condition Title: Enforce_BigQuery_ReadOnly_Tools
+- CEL Condition Expression:
+  api.getAttribute('request.method', '') in ['initialize', 'tools/list', 'tools/call', 'notifications/initialized', 'ping', 'execute_sql_readonly', 'list_tables', 'get_table_schema', 'list_datasets']
+
+3. GENERIC GOOGLE APIS ENDPOINT EGRESS ACCESS:
+- Global Endpoint: agentregistry-00000000-0000-0000-46bd-eed8a4bc7a48 -> Granted roles/iap.egressor to PMA & MSA
+- Regional Endpoint: agentregistry-00000000-0000-0000-4cb8-18a2e7aecdf6 -> Granted roles/iap.egressor to PMA & MSA
+
+4. DATABASE PERMISSION NARROWING (VERBS & LEAST PRIVILEGE):
+- Removed Blanket Role: roles/bigquery.admin from MSA principal
+- Added Project Job-Running Role: roles/bigquery.jobUser to MSA principal
+- Added Dataset-Scoped Read Access: READER (iamMember) on novasmart_pricing and competitor_data datasets
+- Ground Truth Table Query Result:
+  SKU-HSE-4001: Margin Floor = $240.00

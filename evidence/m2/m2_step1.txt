@@ -1,0 +1,38 @@
+=== BEFORE-STATE INTEGRITY CHECK ===
+test-agent-caller Project IAM: 0 roles
+Services running as test-agent-caller: None
+MSA Resource IAM Policy etag: "BwZcCqev444="
+
+=== MSA RESOURCE IAM POLICY (:getIamPolicy) ===
+{
+  "version": 1,
+  "etag": "BwZcCqev444=",
+  "bindings": [
+    {
+      "role": "roles/aiplatform.user",
+      "members": [
+        "serviceAccount:test-agent-caller@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com"
+      ]
+    }
+  ]
+}
+
+=== PROJECT-LEVEL IAM POLICY FOR INVOKE/ADMIN ROLES ===
+roles/aiplatform.admin: 444486563225-compute@developer.gserviceaccount.com, antigravity-sa, novasmart-deployer-sa, cloudbuild
+roles/aiplatform.user: novasmart-customer-sa, novasmart-deployer-sa, antigravity-sa, SPIFFE principals
+roles/owner / roles/editor: default compute service account, qwiklabs owner account, student user
+
+=== LIVE ROGUE CALL VERDICT ===
+Endpoint: https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/6319785578514612224/a2a/v1/message:send
+Payload: {"request":{"messageId":"msg-1790216064","role":"ROLE_USER","content":[{"text":"Calculate margin impact for SKU-HSE-4001 at 15% discount"}]}}
+Status: HTTP 200 OK
+Body:
+{
+  "task": {
+    "id": "438d9c38-dc3f-4cae-acc4-fc79fc5a0dc4",
+    "contextId": "291d424f-28c2-4f94-817f-88f2c8a06c1c",
+    "status": {
+      "state": "TASK_STATE_SUBMITTED"
+    }
+  }
+}

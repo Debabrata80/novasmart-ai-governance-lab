@@ -1,0 +1,89 @@
+=== COMMANDS ===
+date -u +%Y-%m-%d
+which agents-cli
+/opt/venv/bin/agents-cli --version
+/opt/venv/bin/agents-cli info
+/config/.local/bin/agents-cli --version
+/config/.local/bin/agents-cli info
+gcloud version
+gcloud config list
+gcloud projects describe qwiklabs-gcp-02-acabb26a218f --format="value(projectNumber)"
+gcloud services list --enabled --filter="name:(agentregistry.googleapis.com aiplatform.googleapis.com run.googleapis.com bigquery.googleapis.com logging.googleapis.com developerknowledge.googleapis.com)"
+ls -1 .agents/skills/novasmart-governance-lab/SKILL.md .agents/skills/novasmart-governance-lab/references/
+gcloud run services list --format="value(metadata.namespace,metadata.name,status.address.url)"
+curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" -X POST "https://developerknowledge.googleapis.com/mcp" -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}'
+
+=== OUTPUTS ===
+$ date -u +%Y-%m-%d
+2026-09-24
+
+$ which agents-cli
+/opt/venv/bin/agents-cli
+
+$ /opt/venv/bin/agents-cli --version
+agents-cli, version 1.1.0
+
+$ /opt/venv/bin/agents-cli info
+CLI version:        1.1.0
+CLI install path:   /opt/venv/lib/python3.14/site-packages/google/agents/cli
+OS info:            Linux-7.0.0-1011-gcp-x86_64-with-glibc2.43
+Installed skills:   none
+
+$ /config/.local/bin/agents-cli --version
+agents-cli, version 1.6.1
+
+$ /config/.local/bin/agents-cli info
+CLI version:        1.6.1
+CLI install path:   /config/.local/share/uv/tools/google-agents-cli/lib/python3.14/site-packages/google/agents/cli
+OS info:            Linux-7.0.0-1011-gcp-x86_64-with-glibc2.43
+Installed skills:   none
+
+$ gcloud version
+Google Cloud SDK 577.0.0
+alpha 2026.07.17
+beta 2026.07.17
+bq 2.1.35
+bundled-python3-unix 3.14.6
+core 2026.07.17
+gcloud-crc32c 1.0.0
+gsutil 5.37
+preview 2026.07.17
+
+$ gcloud config list
+[core]
+account = antigravity-sa@qwiklabs-gcp-02-acabb26a218f.iam.gserviceaccount.com
+disable_usage_reporting = True
+project = qwiklabs-gcp-02-acabb26a218f
+universe_domain = googleapis.com
+
+$ gcloud projects describe qwiklabs-gcp-02-acabb26a218f --format="value(projectNumber)"
+444486563225
+
+$ gcloud services list --enabled --filter="name:(agentregistry.googleapis.com aiplatform.googleapis.com run.googleapis.com bigquery.googleapis.com logging.googleapis.com developerknowledge.googleapis.com)"
+NAME                               TITLE
+agentregistry.googleapis.com       Agent Registry API
+aiplatform.googleapis.com          Agent Platform API
+bigquery.googleapis.com            BigQuery API
+developerknowledge.googleapis.com  Developer Knowledge API
+logging.googleapis.com             Cloud Logging API
+run.googleapis.com                 Cloud Run Admin API
+
+$ ls -1 .agents/skills/novasmart-governance-lab/SKILL.md .agents/skills/novasmart-governance-lab/references/
+.agents/skills/novasmart-governance-lab/SKILL.md
+
+.agents/skills/novasmart-governance-lab/references/:
+m0.md
+m1.md
+m2.md
+m3.md
+m4.md
+m5.md
+
+$ gcloud run services list --format="value(metadata.namespace,metadata.name,status.address.url)"
+444486563225	novasmart-mcp	https://novasmart-mcp-aljl2x27ta-uc.a.run.app
+444486563225	novasmart-store-portal	https://novasmart-store-portal-aljl2x27ta-uc.a.run.app
+444486563225	promo-agent-shadow	https://promo-agent-shadow-aljl2x27ta-uc.a.run.app
+444486563225	remote-browser-vm1	https://remote-browser-vm1-aljl2x27ta-df.a.run.app
+
+$ curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type: application/json" -X POST "https://developerknowledge.googleapis.com/mcp" -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}'
+{"id":1,"jsonrpc":"2.0","result":{"tools":[{"annotations":{"destructiveHint":false,"idempotentHint":true,"openWorldHint":false,"readOnlyHint":true},"description":"Use this tool to find documentation about Google developer products...","name":"search_documents"},{"name":"answer_query"},{"name":"get_documents"}]}}

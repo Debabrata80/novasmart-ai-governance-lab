@@ -1,0 +1,2 @@
+Mission 5 Step 8 Evidence
+SEAM breakdown: Scenarios 1,2,3,4,5,8 answered by agent model. Scenarios 6,7 intercepted by Model Armor screen.

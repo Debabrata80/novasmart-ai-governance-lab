@@ -1,0 +1,71 @@
+=== Mission 3 Governance Verification Audit & Scorecard Record ===
+Timestamp: 2026-09-24T03:29:08Z
+Audit Status: PASS
+Project ID: qwiklabs-gcp-02-acabb26a218f
+Project Number: 444486563225
+Region: us-central1
+
+--- Audit Check 1: Model Armor Ingress Gateway Attachment ---
+Resource: ReasoningEngine 192638285477052416 (Price Match Agent)
+Query: curl -s -H "Authorization: Bearer <TOKEN>" "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/444486563225/locations/us-central1/reasoningEngines/192638285477052416" | jq '.spec.deploymentSpec.agentGatewayConfig'
+Observed Output:
+  {
+    "clientToAgentConfig": {
+      "agentGateway": "projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways/novasmart-ingress-gateway"
+    }
+  }
+Result: PASS
+
+--- Audit Check 2: Service Agent Callout IAM Roles ---
+Principals Checked:
+- serviceAccount:service-444486563225@gcp-sa-dep.iam.gserviceaccount.com
+- serviceAccount:service-444486563225@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+Roles Verified:
+- roles/modelarmor.calloutUser (Granted to both)
+- roles/modelarmor.user (Granted to both)
+- roles/serviceusage.serviceUsageConsumer (Granted to service-444486563225@gcp-sa-dep)
+Result: PASS
+
+--- Audit Check 3: AuthzExtension & AuthzPolicy Active ---
+AuthzExtension: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzExtensions/nvst-ma-ext
+  Service: modelarmor.us-central1.rep.googleapis.com
+  Timeout: 10s
+  failOpen: true
+AuthzPolicy: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/authzPolicies/nvst-ma-policy
+  policyProfile: CONTENT_AUTHZ
+  target.resources: [projects/444486563225/locations/us-central1/agentGateways/novasmart-ingress-gateway]
+Result: PASS
+
+--- Audit Check 4: Adversarial Prompt Injection Blocked ---
+Probe: POST to Price Match Agent :streamQuery with prompt injection override string
+HTTP Status: 403 PERMISSION_DENIED
+Response Body:
+  {
+    "error": {
+      "code": 403,
+      "message": "Model Armor: Prompt violates content security configurations",
+      "status": "PERMISSION_DENIED"
+    }
+  }
+Result: PASS
+
+--- Audit Check 5: Legitimate Request Throughput ---
+Probe: POST to Price Match Agent :streamQuery with normal 5% price match query
+HTTP Status: 200 OK
+Response Body: PMA processed request normally, prompting user for product SKU.
+Result: PASS
+
+--- Audit Check 6: Scope Boundary Documentation & Integrity Audit ---
+Scope Coverage: PMA (:streamQuery) covered by ingress gateway. CPA & MSA (A2A message:stream) documented as unscreened by design.
+Template Integrity: nvst-jailbreak-template verified intact.
+Self-Grant Audit: Zero Model Armor roles bound to antigravity-sa.
+Result: PASS
+
+--- Governance Scorecard Update ---
+Command Executed:
+  python3 /config/Desktop/Session1/.agents/skills/novasmart-governance-lab/scripts/update_scorecard.py --mission M3 --status PASS \
+    --checks-json '[{"name":"Model Armor Ingress Gateway Attached","proof":"spec.deploymentSpec.agentGatewayConfig.clientToAgentConfig.agentGateway set to novasmart-ingress-gateway on ReasoningEngine 192638285477052416"},{"name":"Service Agent Callout IAM Roles Granted","proof":"roles/modelarmor.calloutUser and roles/modelarmor.user granted to service-444486563225@gcp-sa-dep and service-444486563225@gcp-sa-aiplatform-re"},{"name":"AuthzExtension & AuthzPolicy Active","proof":"nvst-ma-ext pointing to modelarmor.us-central1.rep.googleapis.com with nvst-jailbreak-template; nvst-ma-policy targeting novasmart-ingress-gateway"},{"name":"Adversarial Prompt Injection Blocked","proof":"PMA prompt injection blocked with HTTP 403 · Model Armor: Prompt violates content security configurations"},{"name":"Legitimate Price Match Traffic Functional","proof":"Normal 5% price match request approved with HTTP 200"},{"name":"Estate Scope Boundary & Integrity Verified","proof":"PMA ADK stream covered; CPA/MSA A2A stream documented as out of scope; zero self-grants on antigravity-sa"}]'
+
+Scorecard Result: Mission 3 -> PASS
+Dashboard URL: http://localhost:8088/governance_scorecard.html
+Scorecard File: file:///config/Desktop/novasmart-scorecard/governance_scorecard.html

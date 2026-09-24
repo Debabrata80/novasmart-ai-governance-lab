@@ -1,0 +1,74 @@
+=== M3 Step 2 Evidence: Content Screening Configuration Discovery ===
+Timestamp (UTC): 2026-09-24 03:13:30
+
+--- COMMANDS EXECUTED ---
+
+1. Set Model Armor Regional API Endpoint Override:
+gcloud config set api_endpoint_overrides/modelarmor "https://modelarmor.us-central1.rep.googleapis.com/"
+
+2. Describe Model Armor Template (nvst-jailbreak-template):
+gcloud model-armor templates describe nvst-jailbreak-template --location="us-central1" --format="json"
+
+3. Inspect Network Services Agent Gateways:
+curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://networkservices.googleapis.com/v1beta1/projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agentGateways"
+
+
+--- RAW OUTPUTS RECEIVED ---
+
+1. Model Armor Template Description (nvst-jailbreak-template):
+{
+  "createTime": "2026-09-22T03:32:15.567147520Z",
+  "filterConfig": {
+    "maliciousUriFilterSettings": {
+      "filterEnforcement": "ENABLED"
+    },
+    "piAndJailbreakFilterSettings": {
+      "confidenceLevel": "MEDIUM_AND_ABOVE",
+      "filterEnforcement": "ENABLED"
+    },
+    "raiSettings": {
+      "raiFilters": [
+        {
+          "confidenceLevel": "MEDIUM_AND_ABOVE",
+          "filterType": "HATE_SPEECH"
+        },
+        {
+          "confidenceLevel": "MEDIUM_AND_ABOVE",
+          "filterType": "HARASSMENT"
+        },
+        {
+          "confidenceLevel": "MEDIUM_AND_ABOVE",
+          "filterType": "SEXUALLY_EXPLICIT"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "goog-terraform-provisioned": "true"
+  },
+  "name": "projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/templates/nvst-jailbreak-template",
+  "templateMetadata": {
+    "customPromptSafetyErrorCode": 799,
+    "customPromptSafetyErrorMessage": "Your request was blocked by our content filter. Please rephrase your prompt and try again.",
+    "dataResidencyCompliant": true
+  },
+  "updateTime": "2026-09-22T03:32:15.681932747Z"
+}
+
+2. Agent Gateways Discovery:
+Only "novasmart-egress-gateway" exists (AGENT_TO_ANYWHERE for egress). No CLIENT_TO_AGENT ingress gateway or ingress AuthzExtension referencing nvst-jailbreak-template exists in us-central1.
+
+3. Floor Settings:
+Unconfigured / None.
+
+
+--- VERIFICATION CHECKLIST ---
+| Check | Status | Details |
+| Model Armor Floor Settings | UNCONFIGURED | No project-wide floor settings exist |
+| Provisioned Template | PRESENT | nvst-jailbreak-template exists in us-central1 (created 2026-09-22T03:32:15Z) |
+| Ingress Screening Attachment | UNATTACHED | Template is not attached to any ingress Agent Gateway or AuthzExtension |
+| Active Message Screening | INACTIVE | Messages pass to agents unfiltered |
+
+--- CHANGE RECORD ---
+No configuration changes performed (Read-only discovery beat).

@@ -1,0 +1,3 @@
+Mission 5 Step 2 Evidence
+Analyzed failures and near-misses.
+Scenario 4 blocked by Model Armor Ingress Gateway Screen (HTTP 403). SEAM rule applied: Answered by screen, agent never asked.

@@ -1,0 +1,38 @@
+=== COMMANDS ===
+gcloud agent-registry agents list --location=us-central1 --format="yaml(displayName,location,name,description)"
+gcloud agent-registry agents list --location=global --format="yaml(displayName,location,name,description)"
+
+=== OUTPUTS ===
+$ gcloud agent-registry agents list --location=us-central1 --format="yaml(displayName,location,name,description)"
+---
+description: Front-line Price Match Verification Agent. Calculates discounts and approves <= 10% directly.
+displayName: Price Match Agent
+location: us-central1
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agents/agentregistry-00000000-0000-0000-0be1-0cb0fbc7456d
+---
+description: Corporate Markdown Strategy Agent. Analyzes inventory, cost, and margin data in BigQuery.
+displayName: markdown-strategy-agent
+location: us-central1
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agents/agentregistry-00000000-0000-0000-3e98-92c22500f3bd
+---
+description: Official managed agent querying customer loyalty tiers and PII via novasmart-mcp.
+displayName: customer-personalization-agent
+location: us-central1
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/us-central1/agents/agentregistry-00000000-0000-0000-3434-3937fe7e63e3
+
+$ gcloud agent-registry agents list --location=global --format="yaml(displayName,location,name,description)"
+---
+description: A Workspace Agent is designed to power AI-driven features and workflows across Google Workspace applications...
+displayName: Workspace Agent
+location: global
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/global/agents/agentregistry-00000000-0000-0000-630f-070a9d06e171
+---
+description: The core assistant that interprets user requests and delegates them to specialized agents...
+displayName: Gemini Enterprise Core Assistant
+location: global
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/global/agents/agentregistry-00000000-0000-0000-164b-85f217bb6a5e
+---
+description: This agent is a specialized agent that gathers, analyzes, and understands information...
+displayName: Deep Research
+location: global
+name: projects/qwiklabs-gcp-02-acabb26a218f/locations/global/agents/agentregistry-00000000-0000-0000-58d1-fde20a3dad65
